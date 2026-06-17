@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Movie Search App</title>
+
+
+
+<style>
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+
+    background:
+    linear-gradient(
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.9)),
+    linear-gradient(
+    to right,
+    #000000,
+    #0a192f,
+    #000000);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    transition: background-image 0.8s ease-in-out;
+
+   font-family: 'poppins', serif;
+    color: white;
+}
+
+h1{
+    margin-bottom: 30px;
+    font-size: 45px;
+    letter-spacing: 2px;
+}
+
+.search-box{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+input{
+    width: 300px;
+    padding: 15px;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    font-size: 16px;
+
+    background: rgba(255,255,255,0.15);
+    color: white;
+
+    backdrop-filter: blur(10px);
+}
+
+input::placeholder{
+    color: #ddd;
+}
+
+button{
+    padding: 15px 25px;
+    border: none;
+    border-radius: 30px;
+
+    background: rgb(56, 47, 173);
+    color: white;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover{
+    transform: scale(1.05);
+    background: rgb(56, 47, 173);
+}
+
+.movie-card{
+    width: 800px;
+    max-width: 95%;
+
+    display: flex;
+    gap: 30px;
+
+   box-shadow:
+   0 0 30px rgba(0,140,255,0.25);
+
+
+    background: rgba(255,255,255,0.08);
+    padding: 30px;
+    border-radius: 20px;
+
+    backdrop-filter: blur(10px);
+
+
+    animation: fadeIn 0.5s ease;
+}
+
+.movie-card img{
+    width: 250px;
+    border-radius: 15px;
+
+    transition: 0.3s;
+}
+
+.movie-card img:hover{
+    transform: scale(1.05);
+}
+
+.movie-info{
+    text-align: left;
+}
+
+.movie-info h2{
+    margin-bottom: 15px;
+    font-size: 40px;
+}
+
+.movie-info p{
+    margin: 10px 0;
+    line-height: 1.6;
+    font-size: 18px;
+}
+
+.rating{
+    color: gold;
+    font-weight: bold;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width:700px){
+
+    .movie-card{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .movie-info{
+        text-align: center;
+    }
+
+    input{
+        width: 200px;
+    }
+
+    h1{
+        font-size: 35px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1> Movie Search</h1>
+
+<div class="search-box">
+    <input type="text" id="movie" placeholder="Enter movie name">
+    <button onclick="getMovie()">Search</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+
+async function getMovie(){
+
+    const movie = document.getElementById("movie").value;
+
+    if(movie === ""){
+        alert("Please enter a movie name");
+        return;
+    }
+
+    document.getElementById("result").innerHTML =
+    `<h2>Lights,Camera,Search...</h2>`;
+
+    const apiKey = "c3925b2a";
+
+    const url = `https://www.omdbapi.com/?t=${movie}&apikey=${apiKey}`;
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    if(data.Response === "True"){
+
+      document.body.style.backgroundImage =
+
+`linear-gradient(
+rgba(0,0,0,0.82),
+rgba(0,0,0,0.9)),
+url(${data.Poster})`;
+        document.getElementById("result").innerHTML =
+
+        `<div class="movie-card">
+
+            <img src="${data.Poster}" alt="Movie Poster">
+
+            <div class="movie-info">
+
+                <h2>${data.Title}</h2>
+
+                <p><b> Year:</b> ${data.Year}</p>
+
+                <p><b> Genre:</b> ${data.Genre}</p>
+
+                <p><b> IMDb Rating:</b>
+                <span class="rating">${data.imdbRating}</span></p>
+
+                <p><b> Runtime:</b> ${data.Runtime}</p>
+
+                <p><b> Director:</b> ${data.Director}</p>
+
+                <p><b> Language:</b> ${data.Language}</p>
+
+                <p><b> Plot:</b> ${data.Plot}</p>
+
+            </div>
+
+        </div>`;
+
+    }
+
+    else{
+
+        document.getElementById("result").innerHTML =
+
+        `<h2> Movie Not Found</h2>`;
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
